@@ -11,6 +11,7 @@
  *   *hashFunct(void *): function pointer to the hash function for the generic type pointed to by the members of the hash_array
  *   *addFunct(void *, void*): Function used to resolve collisions when adding 
  *    to a entry. Used to give user greater control over how collision are handled
+ * *createCol(): Create the collider object to handle collision when two hashed objects map to the same bucket.
  *   *contFunct(void *, void *): Function used to see if a collision resolving container (first pointer), contains the object referenced by the second void pointer
  *   *(addCallBack)(void *, void *): Function called when an object already hashed is enterd into the hashtable. First pointer is list of insertion, second is the object itself. 
  *
@@ -21,6 +22,7 @@ struct HashTable {
   void *hash_array;
   int size, n_buckets;
   int (*hashFunct)(void *);
+  void *(*createColl)();
   void (*addFunct)(void *, void *);
   int (*contFunct)(void *, void *);
   void (*addCallBack)(void *, void *);
@@ -29,7 +31,7 @@ struct HashTable {
 
 typedef struct HashTable HashTablePtr;
 
-HashTablePtr hash_create(double threshold, int n_buckets, int (*hashFunct)(void *), void (*addFunct)(void *, void *), int (*contFunct)(void *, void *), void (*addcallBack)(void *, void*));
+HashTablePtr hash_create(double threshold, int n_buckets, int (*hashFunct)(void *),void *(*createColl)(), void (*addFunct)(void *, void *), int (*contFunct)(void *, void *), void (*addcallBack)(void *, void*));
 
 void hash_destroy(HashTablePtr hash_table);
 
