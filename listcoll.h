@@ -8,10 +8,16 @@
  * freq: the frequnecy of the word
  * next: the next file in the linked list
  */
-struct FileIndexList {
+struct FileIndex {
   char *file_name;
   int freq;
-  FileIndexList *next;
+  FileIndex *next;
+};
+
+typedef struct FileIndex* FileIndexPtr;
+
+struct FileIndexList {
+  FileIndexPtr front;
 };
 
 typedef struct FileIndexList* FileIndexListPtr;
@@ -20,12 +26,13 @@ typedef struct FileIndexList* FileIndexListPtr;
  * word: the word itself
  * FileIndexListPtr: pointer to the FileIndexList, the list of files and the number of occurences the word has in each file
  * next: the next object in the linked list
+ * curr_file: the current file being examined in context. When hashed, the index object will identify with the file referneced by this string, and increase/ create the frequency in the corresponding FileIndex
  */
 struct IndexObj {
   char *word;
   FileIndexListPtr file_list;
   indexObj *next;
-
+  char *curr_file;
 };
 
 typedef struct IndexObj* IndexObjPtr;
@@ -46,7 +53,18 @@ struct LinkedIndexObjList {
 
 typedef struct LinkedIndexObjList* LinkedIndexObjListPtr;
 
-int hash(IndexObjPtr to_hash);
-void add(LinkedIndexObjListPtr list, IndexObjPtr to_add);
-int contains(LinkedIndexObjListPtr list, IndexObjPtr to_con);
-void addCallBack(LinkedIndexObjListPtr list, IndexObjPtr collided);
+/* Functions for addition to hash table
+ * See HashTable documentation for usage/function contract
+ */
+int hash(void *to_hash);
+LinkedIndexObjListPtr create();
+void add(void *list, void *to_add);
+int contains(void *list, void *to_con);
+void addCallBack(void *list, void *collided);
+
+
+/* Merge sort implementation for a FileIndexListPtr
+ * Key for sorting is number of word occurences
+ */
+
+void mergesort(void *list);
