@@ -34,7 +34,6 @@ typedef struct HashTable HashTablePtr;
 HashTablePtr hash_create(double threshold, int n_buckets, int (*hashFunct)(void *),void *(*createColl)(), void (*addFunct)(void *, void *), int (*contFunct)(void *, void *), void (*addcallBack)(void *, void*));
 
 void hash_destroy(HashTablePtr hash_table);
-
 void resize(HashTablePtr hash_table);
-void add(HashTablePtr hash_table, void *to_add);
+void add_hash(HashTablePtr hash_table, void *to_add);
 void remove(HashTablePtr hash_table, void *to_remove);

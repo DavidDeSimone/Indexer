@@ -63,13 +63,6 @@ int contains(void *list, void *to_con);
 void addCallBack(void *list, void *collided);
 
 
-/* Merge sort implementation for a FileIndexListPtr
- * Key for sorting is number of word occurences
- */
-
-void mergesort(void *list);
-
-
 /*
  * Constructor for IndexObj
  */

@@ -7,9 +7,7 @@
 #include "listcoll.h"
 #include "hashtable.h"
 
-//Each File with have an associated HashTable
-//Array of HashTables for each file
-HashTablePtr *tables;
+HashTablePtr hash_table;
 
 int main(int argc, char **args) {
   int err = 0;
@@ -21,8 +19,15 @@ int main(int argc, char **args) {
     return -1;
   }
 
-  to_write = args[1];
-  to_read = args[2];
+  to_read = malloc(sizeof(char) * strlen(args[2]) + 1);
+  to_write = malloc(sizeof(char) * strlen(args[1]) + 1);
+
+  strcpy(to_write, args[1]);
+  strcpy(to_read, args[2]);
+
+  //Initalize HashTable object
+  hash_table = hash_create(0.75, 10, &hash, &create, &add, &contains, &addCallBack);
+
 
   err = checkContents(to_read, to_write);
 
@@ -31,7 +36,8 @@ int main(int argc, char **args) {
     return -2;
   }
 
- 
+  free(to_write);
+  free(to_read);
   return 0;
 }
 
@@ -76,6 +82,31 @@ int isDir(char *to_read) {
  */
 void readDir(char *to_read) {
 
+  //Read directory
+  DIR *dir;
+  struct dirent *dent;
+  char buff[50];
+
+  strcpy(buffer, to_read);
+  
+  dir = opendir(buff);
+  
+  if(dir != NULL) {
+
+    //Look over Dir contents
+    while((dent = readdir(dir)) != NULL) {
+      if(isDir(dent->d_name)) {
+	readDir(dent->d_name);
+      } else {
+	readFile(dent->d_name);
+      }
+
+    }
+
+  }
+
+
+
 }
 
 /* Reads a file given by to_read. Creates a hashmap for given file.
@@ -84,7 +115,39 @@ void readDir(char *to_read) {
  * object. Adds hashmap into hashmap array upon complition. 
  */
 void readFile(char *to_read) {
+  FILE *fp;
 
+  //Read in the file
+  fp = fopen(to_read, "rt");
+  char line[800];
+
+  while(fgets(line, 800, fp) =! NULL) {
+    //Tokenize String
+    char *token;
+
+    token = strtok(line, " ");
+
+    while(token != NULL) {
+
+      char *toMake = malloc(sizeof(strlen(token)));
+      strcpy(toMake, token);
+
+      //Lower the case of the string
+      toMake = toLower(toMake);
+
+      //Create Index Obj
+      IndexObjPtr obj = create_index(toMake, to_read); 
+
+      //Hash Index Obj
+      add_hash(hash_table, (void *)obj);	
+
+      //Move to next token
+      token = strtok(NULL, " ");
+    }
+
+  }
+
+  fclose(fp);
 }
 
 void writeFile(char *to_write) {

@@ -8,7 +8,7 @@
  *
  *
  */
-HashTablePtr hash_create(double threshold, int n_buckets, int (*hashFunct)(void *), void (*addFunct)(void *, void *), int (*contFunct)(void *, void*), void (*addCallBack)(void *, void*)) {
+HashTablePtr hash_create(double threshold, int n_buckets, int (*hashFunct)(void *), void *(*createColl)(), void (*addFunct)(void *, void *), int (*contFunct)(void *, void*), void (*addCallBack)(void *, void*)) {
 
   //Carve memory for the hashtable
   HashTablePtr table = malloc(sizeof(HashTablePtr));
@@ -27,6 +27,9 @@ HashTablePtr hash_create(double threshold, int n_buckets, int (*hashFunct)(void 
   //Set the function for determining if the collision structure contains 
   //the given object
   table->contFunct = contFunct;
+
+  //Set the function for creating a collision object
+  table->createColl = createColl;
 
   //Set the add callback. The add callback is called when add() is called
   // on an object already in the table
