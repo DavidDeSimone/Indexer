@@ -65,7 +65,13 @@ void add(HashTablePtr hash_table, void *to_add) {
 
   //Object used to handle hash collision
   void *coll_obj = hash_table->hash_array[bucket];
-  
+
+  //If our collision object is null
+  //Create and add a new one
+  if(coll_obj == NULL) {
+    hash_table->hash_array[bucket] = hash_table->createColl();
+  }
+
   //If the object is contained in the hash table
   if(hash_table->contFunct(coll_obj, to_add)) {
     //Call the callback function for this list

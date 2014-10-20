@@ -31,7 +31,7 @@ typedef struct FileIndexList* FileIndexListPtr;
 struct IndexObj {
   char *word;
   FileIndexListPtr file_list;
-  indexObj *next;
+  IndexObj *next;
   char *curr_file;
 };
 
@@ -61,13 +61,6 @@ LinkedIndexObjListPtr create();
 void add(void *list, void *to_add);
 int contains(void *list, void *to_con);
 void addCallBack(void *list, void *collided);
-
-
-/* Merge sort implementation for a FileIndexListPtr
- * Key for sorting is number of word occurences
- */
-
-void mergesort(void *list);
 
 
 /*
