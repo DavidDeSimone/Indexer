@@ -173,8 +173,10 @@ void addFileIndex(FileIndexListPtr file_list, char *curr_file) {
 IndexObjPtr create_index(char *name, char *file_name) {
   IndexObjPtr obj = malloc(sizeof(struct IndexObj));
 
+  obj->word = malloc(sizeof(char) * strlen(name));
+
   //Assign name
-  obj->word = name;
+  strcpy(obj-word, name);
   
   obj->file_list = malloc(sizeof(struct FileIndexList));
   obj->file_list->front = NULL;

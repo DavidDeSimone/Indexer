@@ -30,12 +30,7 @@ int main(int argc, char **args) {
   list = create();
 
 
-  err = checkContents(to_read, to_write);
-
-  if(err != 0) {
-    printf("Error, entry entered not a directory!\n");
-    return -2;
-  }
+  checkContents(to_read, to_write);
 
   free(to_write);
   free(to_read);
@@ -88,7 +83,7 @@ void readDir(char *to_read) {
   struct dirent *dent;
   char buff[50];
 
-  strcpy(buffer, to_read);
+  strcpy(buff, to_read);
   
   dir = opendir(buff);
   
@@ -131,7 +126,7 @@ void readFile(char *to_read) {
   fp = fopen(to_read, "rt");
   char line[800];
 
-  while(fgets(line, 800, fp) =! NULL) {
+  while(fgets(line, 800, fp) != NULL) {
     //Tokenize String
     char *token;
 
