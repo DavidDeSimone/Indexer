@@ -5,8 +5,7 @@ IFLAGS = -I.
 
 OUTPUT = index
 OBJFILES = liblist.o index.o
-all: $(OUTPUT)
-
+all: liblist.o $(OUTPUT)
 
 $(OUTPUT): $(OBJFILES)
 	$(CC) $(CFLAGS) $(OBJFILES) $(LFLAGS) -o $(OUTPUT) $(IFLAGS)
@@ -16,5 +15,9 @@ $liblist.o: listcoll.c
 
 $index.o: index.c
 	$(CC) $(CFLAGS) -c index.c -o index.o $(IFLAGS)
+
+
+
+
 clean:
 	rm *.o $(OUTPUT)

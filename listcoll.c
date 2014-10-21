@@ -145,6 +145,18 @@ void addFileIndex(FileIndexListPtr file_list, char *curr_file) {
   /* If we see the file object in our list
      remove it, increase its freq, add it back to list */
     if(strcmp(curr->file_name, curr_file) == 0) {
+      /* If we are inserting into the front of the list*/
+      if(prev == NULL) {
+	FileIndexPtr tmp = curr;
+	tmp->freq += 1;
+
+	insertFileIndex(file_list, tmp);
+	return;
+      }
+
+
+
+
       FileIndexPtr tmp = curr;
       prev->next = curr->next;
 
@@ -176,7 +188,7 @@ IndexObjPtr create_index(char *name, char *file_name) {
   obj->word = malloc(sizeof(char) * strlen(name));
 
   //Assign name
-  strcpy(obj-word, name);
+  strcpy(obj->word, name);
   
   obj->file_list = malloc(sizeof(struct FileIndexList));
   obj->file_list->front = NULL;
