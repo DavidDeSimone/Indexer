@@ -8,10 +8,11 @@
  * freq: the frequnecy of the word
  * next: the next file in the linked list
  */
+
 struct FileIndex {
   char *file_name;
   int freq;
-  FileIndex *next;
+  struct FileIndex *next;
 };
 
 typedef struct FileIndex* FileIndexPtr;
@@ -31,7 +32,7 @@ typedef struct FileIndexList* FileIndexListPtr;
 struct IndexObj {
   char *word;
   FileIndexListPtr file_list;
-  IndexObj *next;
+  struct IndexObj *next;
   char *curr_file;
 };
 
@@ -55,17 +56,14 @@ typedef struct LinkedIndexObjList* LinkedIndexObjListPtr;
 
 /* Functions for addition to sorted list
  */
-int hash(void *to_hash);
-void* create();
+LinkedIndexObjListPtr create();
 void add(LinkedIndexObjListPtr list, IndexObjPtr to_add);
-int contains(void *list, void *to_con);
-void addCallBack(void *list, void *collided);
-
-
+void addFileIndex(FileIndexListPtr file_list, char *curr_file);
 /*
  * Constructor for IndexObj
  */
 
 IndexObjPtr create_index(char *name, char *filename);
 
-FileindexListPtr create_file_index_list();
+FileIndexListPtr create_file_index_list();
+FileIndexPtr create_file_index(char *file_name);

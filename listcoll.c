@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "listcoll.h"
 
 LinkedIndexObjListPtr create() {
@@ -10,7 +12,7 @@ LinkedIndexObjListPtr create() {
   return list;
 }
 
-void add(LinkedObjListPtr list_ptr, IndexObjPtr obj_toadd) {
+void add(LinkedIndexObjListPtr list_ptr, IndexObjPtr obj_toadd) {
   
   //If the list is empty
   if(list_ptr->front == NULL) {
@@ -19,7 +21,7 @@ void add(LinkedObjListPtr list_ptr, IndexObjPtr obj_toadd) {
     FileIndexListPtr file_list = create_file_index_list();
     obj_toadd->file_list = file_list;
     
-    addFileIndex(curr->file_list, curr->curr_file);
+    addFileIndex(obj_toadd->file_list, obj_toadd->curr_file);
     return;
   } 
 
@@ -97,8 +99,8 @@ void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
 	return;
       }
 
-      prev->next = file_list;
-      file_list->next = curr;
+      prev->next = file_index;
+      file_index->next = curr;
       return;
     }
 
@@ -185,14 +187,14 @@ IndexObjPtr create_index(char *name, char *file_name) {
 }
 
 FileIndexListPtr create_file_index_list() {
-  FileIndexPtr ret = malloc(sizeof(struct FileIndex));
+  FileIndexListPtr ret = malloc(sizeof(struct FileIndex));
   ret->front = NULL;
 
   return ret;
 }
 
 FileIndexPtr create_file_index(char *file_name) {
-  FileIndexPtr ret = malloc(sizeof(struct FileIndex));
+  FileIndexPtr ret = (FileIndexPtr)malloc(sizeof(struct FileIndex));
 
   ret->file_name = malloc(sizeof(char) * strlen(file_name));
   strcpy(ret->file_name, file_name);

@@ -1,0 +1,18 @@
+CC = gcc
+CLFAGS = -g -Wall
+LFLAGS = -L.
+
+OUTPUT = index
+OBJFILES = liblist.o
+all: $(OUTPUT)
+
+
+$(OUTPUT): $(OBJFILES)
+	$(CC) $(CFLAGS) $(OBJFILES) $(LFLAGS) -o $(OUTPUT)
+
+$(OBJFILES): listcoll.c
+	$(CC) $(CFLAGS) -c listcoll.c -o liblist.o
+
+
+clean:
+	rm *.o $(OUTPUT)
