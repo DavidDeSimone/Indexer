@@ -14,13 +14,17 @@ LinkedIndexObjListPtr create() {
 
 void add(LinkedIndexObjListPtr list_ptr, IndexObjPtr obj_toadd) {
   
+
+  if(obj_toadd->file_list == NULL) {
+    /*As this is a new entry, create the file list object */
+      FileIndexListPtr file_list = create_file_index_list();
+      obj_toadd->file_list = file_list;
+  }
+
   //If the list is empty
   if(list_ptr->front == NULL) {
     list_ptr->front = obj_toadd;
 
-    FileIndexListPtr file_list = create_file_index_list();
-    obj_toadd->file_list = file_list;
-    
     addFileIndex(obj_toadd->file_list, obj_toadd->curr_file);
     return;
   } 
@@ -53,12 +57,11 @@ void add(LinkedIndexObjListPtr list_ptr, IndexObjPtr obj_toadd) {
 	obj_toadd->next = curr;
       }
 
-      /*As this is a new entry, create the file list object */
-      FileIndexListPtr file_list = create_file_index_list();
-      obj_toadd->file_list = file_list;
+     
 
       /* Update the file index substructure */
       addFileIndex(obj_toadd->file_list, obj_toadd->curr_file);
+      return;
     }
     
     prev = curr;
@@ -74,12 +77,19 @@ void add(LinkedIndexObjListPtr list_ptr, IndexObjPtr obj_toadd) {
 
 void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
 
+  if(file_index == NULL) {
+    printf("Improper file index\n");
+    return;
+  }
+
+
   if(file_list == NULL) {
     printf("Null List");
     return;
   }
 
   if(file_list->front == NULL) {
+    printf("Case 0\n");
     file_list->front = file_index;
     return;
   }
@@ -94,11 +104,13 @@ void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
   do {
     if(strcmp(curr->file_name, file_index->file_name) < 0) {
       if(prev == NULL) {
+	printf("Case 1\n");
 	file_index->next = file_list->front;
 	file_list->front = file_index;
 	return;
       }
 
+      printf("Case 2\n");
       prev->next = file_index;
       file_index->next = curr;
       return;
@@ -107,6 +119,7 @@ void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
     prev = curr;
   } while((curr = curr->next) != NULL);
 
+  printf("Case 3\n");
   prev->next = file_index;
   file_index->next = NULL;
 
@@ -117,6 +130,7 @@ void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
  *
  */
 void addFileIndex(FileIndexListPtr file_list, char *curr_file) {
+
   if(file_list == NULL) {
     printf("Error, null list found");
     return;
@@ -218,4 +232,16 @@ FileIndexPtr create_file_index(char *file_name) {
   ret->next = NULL;
 
   return ret;
+}
+
+void printls(LinkedIndexObjListPtr ls) {
+  IndexObjPtr curr = ls->front;
+
+  do {
+    printf("%s\n", curr->word);
+
+
+  } while((curr = curr->next) != NULL);
+
+
 }

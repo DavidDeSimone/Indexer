@@ -146,6 +146,10 @@ void readFile(char *to_read) {
       //Add Index Obj
       add(list, obj);	
 
+      printf("Printing List!!\n");
+      printls(list);
+
+
       //Move to next token
       token = strtok(NULL, " ");
     }
@@ -155,7 +159,12 @@ void readFile(char *to_read) {
   fclose(fp);
 }
 
+
+
 void writeFile(char *to_write) {
+  printls(list);
+  
+
 
 }
 

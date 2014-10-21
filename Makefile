@@ -5,15 +5,15 @@ IFLAGS = -I.
 
 OUTPUT = index
 OBJFILES = liblist.o index.o
-all: liblist.o $(OUTPUT)
+all: $(OUTPUT)
 
 $(OUTPUT): $(OBJFILES)
 	$(CC) $(CFLAGS) $(OBJFILES) $(LFLAGS) -o $(OUTPUT) $(IFLAGS)
 
-$liblist.o: listcoll.c
+liblist.o: listcoll.c
 	$(CC) $(CFLAGS) -c listcoll.c -o liblist.o $(IFLAGS)
 
-$index.o: index.c
+index.o: index.c
 	$(CC) $(CFLAGS) -c index.c -o index.o $(IFLAGS)
 
 
