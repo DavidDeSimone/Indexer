@@ -7,7 +7,7 @@
 #include "listcoll.h"
 #include "hashtable.h"
 
-HashTablePtr hash_table;
+LinkedIndexObjListPtr list;
 
 int main(int argc, char **args) {
   int err = 0;
@@ -25,8 +25,8 @@ int main(int argc, char **args) {
   strcpy(to_write, args[1]);
   strcpy(to_read, args[2]);
 
-  //Initalize HashTable object
-  hash_table = hash_create(0.75, 10, &hash, &create, &add, &contains, &addCallBack);
+  //Initalize LinkedObjList structure
+  list = create();
 
 
   err = checkContents(to_read, to_write);
@@ -109,6 +109,15 @@ void readDir(char *to_read) {
 
 }
 
+
+/*
+ * Changes all characters in the given string to their lower case versions
+ */
+char* toLower(char *str) {
+  return str;
+}
+
+
 /* Reads a file given by to_read. Creates a hashmap for given file.
  * Tokenizes each word of the file. Constructs an wrapper object for the word
  * and hashes it. If a collision occures, occurrence will be raised by collision
@@ -138,8 +147,8 @@ void readFile(char *to_read) {
       //Create Index Obj
       IndexObjPtr obj = create_index(toMake, to_read); 
 
-      //Hash Index Obj
-      add_hash(hash_table, (void *)obj);	
+      //Add Index Obj
+      add(list, obj);	
 
       //Move to next token
       token = strtok(NULL, " ");

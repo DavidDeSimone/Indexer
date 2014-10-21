@@ -1,104 +1,170 @@
 #include <stdio.h>
 #include "listcoll.h"
 
-int hash(void *to_hash) {
-
-  IndexObjPtr obj_tohash = (IndexObjPtr)to_hash;
-
-  int hash = 5381;
-  int c;
-
-  char *str = obj_tohash->word;
-
-  while(c = *str++) {
-    hash = ((hash << 5) + hash) + c;
-  }
-
-  return hash;
-}
-
 LinkedIndexObjListPtr create() {
   LinkedIndexObjListPtr list = malloc(sizeof(struct LinkedIndexObjList));
 
   list->front = NULL;
   list->curr_file_name = NULL;
 
-
   return list;
 }
 
-void add(void *list, void *to_add) {
+void add(LinkedObjListPtr list_ptr, IndexObjPtr obj_toadd) {
   
-  LinkedIndexObjListPtr list_ptr = (LinkedIndexObjListPtr)list;
-  IndexObjPtr obj_toadd = (IndexObjPtr)to_add;
-
   //If the list is empty
   if(list_ptr->front == NULL) {
-    list_ptr = obj_toadd;
+    list_ptr->front = obj_toadd;
 
-    //Create the linked list of files this word belongs to
-    FileIndexPtr filein = malloc(sizeof(struct FileIndex));
+    FileIndexListPtr file_list = create_file_index_list();
+    obj_toadd->file_list = file_list;
     
-    //Get the current file name from the object
-    filein->file_name = obj_toadd->curr_file;
-    filein->freq = 1;
-    filein->next = NULL;
-
-    //Set the front of the sorted index file list
-    //to be our new object
-    obj_toadd->file_list->front = filein;
-
+    addFileIndex(curr->file_list, curr->curr_file);
     return;
   } 
 
-  //If the list is not empty
-  IndexObjPtr obj = list_ptr->front;
+  //Iterate over the linked list
+  IndexObjPtr curr = list_ptr->front;
+  IndexObjPtr prev = NULL;
 
-  //Insert at the front of the list
-  list_ptr->front = obj_toadd;
-  obj_toadd->next = obj;
+  do {
+    /*if our key equals the current items key
+      update the file-index sub-structure and return*/
+    if(strcmp(curr->word,obj_toadd->word) == 0) {
+      addFileIndex(curr->file_list, curr->curr_file);
+      
+      free(obj_toadd);
+      return;
+    } 
+    
+    /*if we our key is less then the current items key
+      insert out item in the list*/
+    if(strcmp(obj_toadd->word,curr->word) < 0) {
+      
+      /* If previous is null, we are inserting to the front of the 
+       list */
+      if(prev == NULL) {
+	obj_toadd->next = list_ptr->front;
+	list_ptr->front = obj_toadd;
+      } else {
+	prev->next = obj_toadd;
+	obj_toadd->next = curr;
+      }
 
-  //Add is only called when the list does not contain this object
-  FileIndexPtr filein = malloc(sizeof(struct FileIndex));
+      /*As this is a new entry, create the file list object */
+      FileIndexListPtr file_list = create_file_index_list();
+      obj_toadd->file_list = file_list;
 
-  filein->file_name = obj_toadd->curr_file;
-  filein->freq = 1;
-  filein->next = NULL;
+      /* Update the file index substructure */
+      addFileIndex(obj_toadd->file_list, obj_toadd->curr_file);
+    }
+    
+    prev = curr;
+  } while((curr = curr->next) != NULL);
 
-  obj_toadd->file_list->front = filein;
-
+  //if we reach the end of the list
+  //insert at the end
+  prev->next = obj_toadd;
+  obj_toadd->next = NULL;
+  
+  addFileIndex(obj_toadd->file_list, obj_toadd->curr_file);
 }
 
-int contains(void *list, void *to_con) {
-  LinkedIndexObjListPtr list_ptr = (LinkedIndexObjListPtr)list;
-  IndexObjPtr obj_tocon = (IndexObjPtr)to_con;
+void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
 
-  if(list_ptr == NULL || obj_tocon == NULL) {
-    return 0;
+  if(file_list == NULL) {
+    printf("Null List");
+    return;
   }
 
-  IndexObjPtr obj = list_ptr->front;
-  
+  if(file_list->front == NULL) {
+    file_list->front = file_index;
+    return;
+  }
+
+  //Iterate over linked list
+  //If we see an entry less then our item
+  //insert at that point
+
+  FileIndexPtr curr = file_list->front;
+  FileIndexPtr prev = NULL;
+
   do {
-    //Match found!
-    //NOTE Make sure newlines aren't present
-    //may cause bugs in compare function
-    if(strcmp(obj_tocon->word, obj->word) == 0) {
-      return 1;
+    if(strcmp(curr->file_name, file_index->file_name) < 0) {
+      if(prev == NULL) {
+	file_index->next = file_list->front;
+	file_list->front = file_index;
+	return;
+      }
+
+      prev->next = file_list;
+      file_list->next = curr;
+      return;
     }
-  } while((obj = obj->next) != NULL);
- 
-  return 0;
 
-}
+    prev = curr;
+  } while((curr = curr->next) != NULL);
 
-void addCallBack(void *list, void *collided) {
-
-  LinkedIndexObjListPtr list_ptr = (LinkedIndexObjListptr)list;
-  IndexObjPtr obj_coll = (IndexObjPtr)collided;
+  prev->next = file_index;
+  file_index->next = NULL;
 
 
 }
+
+/*
+ *
+ */
+void addFileIndex(FileIndexListPtr file_list, char *curr_file) {
+  if(file_list == NULL) {
+    printf("Error, null list found");
+    return;
+  }
+  
+
+  /* If the list is empty */
+  if(file_list->front == NULL) {
+
+  /* Create the FileIndex Object
+     Add it to the front of the list*/
+    FileIndexPtr file_index = create_file_index(curr_file);
+    insertFileIndex(file_list, file_index); 
+    
+    return;
+  }
+
+  FileIndexPtr curr = file_list->front;
+  FileIndexPtr prev = NULL;
+
+
+  /* Iterate over linked list */
+
+  do {
+
+  /* If we see the file object in our list
+     remove it, increase its freq, add it back to list */
+    if(strcmp(curr->file_name, curr_file) == 0) {
+      FileIndexPtr tmp = curr;
+      prev->next = curr->next;
+
+      tmp->freq += 1;
+      
+      insertFileIndex(file_list, tmp);
+
+      return;
+    }
+
+
+
+  /* If we do not see the file object
+     Create the file object, and add it to list*/
+    prev = curr->next;
+  } while((curr = curr->next) != NULL);
+
+  FileIndexPtr file_index = create_file_index(curr_file);
+  insertFileIndex(file_list, file_index); 
+
+}
+
 
 //TODO: Check is this function is responsible for creating
 // inital node for file index list
@@ -116,4 +182,24 @@ IndexObjPtr create_index(char *name, char *file_name) {
   obj->curr_file = file_name;
 
   return obj;
+}
+
+FileIndexListPtr create_file_index_list() {
+  FileIndexPtr ret = malloc(sizeof(struct FileIndex));
+  ret->front = NULL;
+
+  return ret;
+}
+
+FileIndexPtr create_file_index(char *file_name) {
+  FileIndexPtr ret = malloc(sizeof(struct FileIndex));
+
+  ret->file_name = malloc(sizeof(char) * strlen(file_name));
+  strcpy(ret->file_name, file_name);
+
+  ret->freq = 1;
+
+  ret->next = NULL;
+
+  return ret;
 }

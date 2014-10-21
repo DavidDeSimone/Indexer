@@ -53,12 +53,11 @@ struct LinkedIndexObjList {
 
 typedef struct LinkedIndexObjList* LinkedIndexObjListPtr;
 
-/* Functions for addition to hash table
- * See HashTable documentation for usage/function contract
+/* Functions for addition to sorted list
  */
 int hash(void *to_hash);
-LinkedIndexObjListPtr create();
-void add(void *list, void *to_add);
+void* create();
+void add(LinkedIndexObjListPtr list, IndexObjPtr to_add);
 int contains(void *list, void *to_con);
 void addCallBack(void *list, void *collided);
 
@@ -68,3 +67,5 @@ void addCallBack(void *list, void *collided);
  */
 
 IndexObjPtr create_index(char *name, char *filename);
+
+FileindexListPtr create_file_index_list();
