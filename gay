@@ -1,60 +1,66 @@
 <list> a
-./test_reads/test2.txt 2 ./test_reads/test1.txt 1 ./test_reads/test2.txt~ 1 
+test2.txt 2 test1.txt 1 test2.txt~ 1 
 </list>
 <list> and
-./test_reads/test_deep/test_deep.txt 1 ./test_reads/test2.txt 1 
+test_deep.txt 1 test2.txt 1 
+</list>
+<list> bro
+test77.txt 1 
 </list>
 <list> day
-./test_reads/test1.txt 1 ./test_reads/test2.txt 1 ./test_reads/test2.txt~ 1 
+test1.txt 1 test2.txt 1 test2.txt~ 1 
 </list>
 <list> deep
-./test_reads/test_deep/test_deep.txt 1 
+test77.txt 2 test_deep.txt 1 
 </list>
 <list> do
-./test_reads/test3.txt 1 
+test3.txt 1 
 </list>
 <list> great
-./test_reads/test2.txt 2 ./test_reads/test1.txt 1 ./test_reads/test2.txt~ 1 
+test2.txt 2 test1.txt 1 test2.txt~ 1 
 </list>
 <list> hello
-./test_reads/test1.txt 1 ./test_reads/test3.txt 1 ./test_reads/test2.txt 1 
+test1.txt 1 test3.txt 1 test2.txt 1 
 </list>
 <list> i
-./test_reads/test3.txt 1 
+test3.txt 1 
 </list>
 <list> is
-./test_reads/test_deep/test_deep.txt 1 ./test_reads/test2.txt 1 ./test_reads/test2.txt~ 1 
+test_deep.txt 1 test2.txt 1 test2.txt~ 1 
 </list>
 <list> it
-./test_reads/test2.txt 1 ./test_reads/test2.txt~ 1 
+test2.txt 1 test2.txt~ 1 
 </list>
 <list> layers
-./test_reads/test_deep/test_deep.txt 1 
+test_deep.txt 1 
 </list>
 <list> me
-./test_reads/test3.txt 1 
+test3.txt 1 
+</list>
+<list> so
+test77.txt 2 
 </list>
 <list> this
-./test_reads/test_deep/test_deep.txt 1 
+test_deep.txt 1 
 </list>
 <list> told
-./test_reads/test3.txt 1 
+test3.txt 1 
 </list>
 <list> two
-./test_reads/test_deep/test_deep.txt 1 
+test_deep.txt 1 
 </list>
 <list> what
-./test_reads/test1.txt 1 ./test_reads/test3.txt 1 
+test1.txt 1 test3.txt 1 
 </list>
 <list> wont
-./test_reads/test3.txt 1 
+test3.txt 1 
 </list>
 <list> world
-./test_reads/test1.txt 1 ./test_reads/test2.txt 1 
+test1.txt 1 test2.txt 1 
 </list>
 <list> yes
-./test_reads/test2.txt 1 ./test_reads/test2.txt~ 1 
+test2.txt 1 test2.txt~ 1 
 </list>
 <list> you
-./test_reads/test3.txt 2 
+test3.txt 2 
 </list>

@@ -54,7 +54,7 @@ void checkContents(char *to_read, char *to_write) {
       return;
 
     } else {
-    readFile(to_read);
+      readFile(to_read, to_read);
   }
 
   writeFile(to_write);
@@ -122,14 +122,13 @@ void readDir(char *to_read) {
       if(strcmp(dent->d_name, ".") != 0 && 
 	 strcmp(dent->d_name, "..") != 0) {
 	
-
 	path = apdir(to_read, dent->d_name);
       if(isDir(path)) {
 	printf("Reading directory %s\n", path);
 	readDir(path);
       } else {
 	printf("Reading file %s\n", path);
-	readFile(path);
+	readFile(path, dent->d_name);
       }
 
 
@@ -161,14 +160,24 @@ char* toLower(char *str) {
  * and hashes it. If a collision occures, occurrence will be raised by collision
  * object. Adds hashmap into hashmap array upon complition. 
  */
-void readFile(char *to_read) {
+void readFile(char *to_read, char *d_name) {
   FILE *fp;
 
   //Read in the file
-  fp = fopen(to_read, "rt");
-  char line[100000];
+  fp = fopen(to_read, "r");
 
-  while(fgets(line, 100000, fp) != NULL) {
+  //Get file size
+  fseek(fp, 0L, SEEK_END);
+  int size = ftell(fp);
+  //Seek back to start
+  fseek(fp, 0L, SEEK_SET); 
+
+  char line[size];
+
+  
+
+
+  while(fgets(line, size, fp) != NULL) {
     //Tokenize String
     char *token;
 
@@ -183,7 +192,7 @@ void readFile(char *to_read) {
       toMake = toLower(toMake);
 
       //Create Index Obj
-      IndexObjPtr obj = create_index(toMake, to_read); 
+      IndexObjPtr obj = create_index(toMake, d_name); 
 
       //Add Index Obj
       add(list, obj);	
@@ -201,7 +210,7 @@ void readFile(char *to_read) {
 
 
 void writeFile(char *to_write) {
-  printls(list);
+  // printls(list);
   
   //If the file is not found already on disk
   if(isDir(to_write) == FILE_NOT_FOUND) {
@@ -254,6 +263,13 @@ void writeList(LinkedIndexObjListPtr list, char *to_write) {
   fp = fopen(to_write, "w");
 
   IndexObjPtr curr = list->front;
+
+  if(curr == NULL) {
+    return;
+  }
+
+
+
 
   do {
 
