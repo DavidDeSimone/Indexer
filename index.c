@@ -1,10 +1,11 @@
-// TODO. The to_write variable could be a directory. And thus to empty it
-//We must first delete the contents of the directory. 
+#define _XOPEN_SOURCE 500
 #include <stdio.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ftw.h>
+#include <unistd.h>
 #include "listcoll.h"
 #include "index.h"
 #define FILE_NOT_FOUND -2
@@ -218,11 +219,19 @@ void writeFile(char *to_write) {
 
     if(buff == 'y') {
       if(isDir(to_write)) {
+	int status = remove(to_write);
 
+	//If the dir is non empty
+	if(status == 0) {
+	  writeList(list, to_write);
+	} else {
+	  rmrf(to_write);
+	  writeList(list, to_write);
+	}
 
       } else {
 	int status = remove(to_write);
-	writeList(to_write);
+	writeList(list, to_write);
       }
 
     } else {
@@ -276,4 +285,14 @@ void writeList(LinkedIndexObjListPtr list, char *to_write) {
 
 
   fclose(fp);
+}
+
+int unc(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf) {
+  int st = remove(fpath);
+  
+  return st;
+}
+
+int rmrf(char *path) {
+  return nftw(path, unc, 64, FTW_DEPTH | FTW_PHYS);
 }
