@@ -210,8 +210,24 @@ void writeFile(char *to_write) {
   } else {
     //the file exists on disk
 
+    char buff;
     //Prompt confirmation of deletion
+    printf("File/Dir already exists, delete? [y/n]\n");
 
+    scanf("%c", &buff);
+
+    if(buff == 'y') {
+      if(isDir(to_write)) {
+
+
+      } else {
+	int status = remove(to_write);
+	writeList(to_write);
+      }
+
+    } else {
+      printf("Confirm non-delete\n");
+    }
     //if the file is a directory
     //delete with recursive system call
 
@@ -253,6 +269,7 @@ void writeList(LinkedIndexObjListPtr list, char *to_write) {
       i++;
       f_curr = f_curr->next;
     }
+    fprintf(fp, "\n</list>\n");
 
 
   } while((curr = curr->next) != NULL);
