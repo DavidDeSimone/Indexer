@@ -37,7 +37,7 @@ void add(LinkedIndexObjListPtr list_ptr, IndexObjPtr obj_toadd) {
     /*if our key equals the current items key
       update the file-index sub-structure and return*/
     if(strcmp(curr->word,obj_toadd->word) == 0) {
-      addFileIndex(curr->file_list, curr->curr_file);
+      addFileIndex(curr->file_list, obj_toadd->curr_file);
       
       free(obj_toadd);
       return;
@@ -89,7 +89,6 @@ void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
   }
 
   if(file_list->front == NULL) {
-    printf("Case 0\n");
     file_list->front = file_index;
     return;
   }
@@ -102,15 +101,13 @@ void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
   FileIndexPtr prev = NULL;
 
   do {
-    if(strcmp(curr->file_name, file_index->file_name) < 0) {
+    if(curr->freq < file_index->freq) {
       if(prev == NULL) {
-	printf("Case 1\n");
 	file_index->next = file_list->front;
 	file_list->front = file_index;
 	return;
       }
 
-      printf("Case 2\n");
       prev->next = file_index;
       file_index->next = curr;
       return;
@@ -119,7 +116,6 @@ void insertFileIndex(FileIndexListPtr file_list, FileIndexPtr file_index) {
     prev = curr;
   } while((curr = curr->next) != NULL);
 
-  printf("Case 3\n");
   prev->next = file_index;
   file_index->next = NULL;
 
@@ -168,9 +164,6 @@ void addFileIndex(FileIndexListPtr file_list, char *curr_file) {
 	return;
       }
 
-
-
-
       FileIndexPtr tmp = curr;
       prev->next = curr->next;
 
@@ -185,7 +178,7 @@ void addFileIndex(FileIndexListPtr file_list, char *curr_file) {
 
   /* If we do not see the file object
      Create the file object, and add it to list*/
-    prev = curr->next;
+    prev = curr;
   } while((curr = curr->next) != NULL);
 
   FileIndexPtr file_index = create_file_index(curr_file);
@@ -199,7 +192,7 @@ void addFileIndex(FileIndexListPtr file_list, char *curr_file) {
 IndexObjPtr create_index(char *name, char *file_name) {
   IndexObjPtr obj = malloc(sizeof(struct IndexObj));
 
-  obj->word = malloc(sizeof(char) * strlen(name));
+  obj->word = malloc(sizeof(char) * strlen(name) + 1);
 
   //Assign name
   strcpy(obj->word, name);
@@ -239,6 +232,13 @@ void printls(LinkedIndexObjListPtr ls) {
 
   do {
     printf("%s\n", curr->word);
+
+    FileIndexPtr f_curr = curr->file_list->front;
+
+    while(f_curr != NULL) {
+      printf("\t Filename: %s, Freq: %d\n", f_curr->file_name, f_curr->freq);
+      f_curr = f_curr->next;
+    }
 
 
   } while((curr = curr->next) != NULL);

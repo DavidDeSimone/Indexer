@@ -8,3 +8,5 @@ void readDir(char *to_read);
 char* toLower(char *str);
 void readFile(char *to_read);
 void writeFile(char *to_write);
+char* apdir(char *base, char* to_append);
+void writeList(LinkedIndexObjListPtr list, char *fp);

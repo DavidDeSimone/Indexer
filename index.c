@@ -7,6 +7,8 @@
 #include <string.h>
 #include "listcoll.h"
 #include "index.h"
+#define FILE_NOT_FOUND -2
+
 
 LinkedIndexObjListPtr list;
 
@@ -29,7 +31,6 @@ int main(int argc, char **args) {
   //Initalize LinkedObjList structure
   list = create();
 
-
   checkContents(to_read, to_write);
 
   free(to_write);
@@ -42,9 +43,16 @@ int main(int argc, char **args) {
  */
 void checkContents(char *to_read, char *to_write) {
  
-  if(isDir(to_read)) {
+  if(isDir(to_read) == 1) {
+    printf("Reading Dir %s\n", to_read);
     readDir(to_read);
-  } else {
+  } else 
+    if(isDir(to_read) == FILE_NOT_FOUND) {
+
+      printf("File Not Found");
+      return;
+
+    } else {
     readFile(to_read);
   }
 
@@ -57,20 +65,36 @@ void checkContents(char *to_read, char *to_write) {
 int isDir(char *to_read) {
 
   struct stat s;
-  if( stat(to_read, &s) == 0) {
+  if(stat(to_read, &s) == 0) {
 
     if(s.st_mode & S_IFDIR) {
       return 1;
     } else if(s.st_mode & S_IFREG) {
       return 0;
     } else {
-      return -2;
+      printf("Error, not found\n");
+      return -1;
     }
 
   } else {
-    return -1;
+    return FILE_NOT_FOUND;
   }
 }
+
+
+/*
+ *
+ */
+char* apdir(char *base, char *to_append) {
+  char *ret = malloc(sizeof(char) * (strlen(base) + strlen(to_append)) + 2);
+
+  strcpy(ret, base);
+  strcat(ret, "/");
+  strcat(ret, to_append);
+
+  return ret;
+}
+
 
 /* Read directory, and for each file in the directory, calls 
  * readFile(). If another directory is found, recursivly calls
@@ -81,7 +105,8 @@ void readDir(char *to_read) {
   //Read directory
   DIR *dir;
   struct dirent *dent;
-  char buff[50];
+  char buff[200];
+  char *path;
 
   strcpy(buff, to_read);
   
@@ -91,18 +116,29 @@ void readDir(char *to_read) {
 
     //Look over Dir contents
     while((dent = readdir(dir)) != NULL) {
-      if(isDir(dent->d_name)) {
-	readDir(dent->d_name);
+
+      /* We don't want to read the current or previous dirs */
+      if(strcmp(dent->d_name, ".") != 0 && 
+	 strcmp(dent->d_name, "..") != 0) {
+	
+
+	path = apdir(to_read, dent->d_name);
+      if(isDir(path)) {
+	printf("Reading directory %s\n", path);
+	readDir(path);
       } else {
-	readFile(dent->d_name);
+	printf("Reading file %s\n", path);
+	readFile(path);
       }
 
+
+      }
     }
 
   }
 
 
-
+  closedir(dir);
 }
 
 
@@ -110,9 +146,14 @@ void readDir(char *to_read) {
  * Changes all characters in the given string to their lower case versions
  */
 char* toLower(char *str) {
+  int i;
+
+  for(i = 0; i < strlen(str); i++) {
+    str[i] = tolower(str[i]);
+  }
+
   return str;
 }
-
 
 /* Reads a file given by to_read. Creates a hashmap for given file.
  * Tokenizes each word of the file. Constructs an wrapper object for the word
@@ -124,13 +165,13 @@ void readFile(char *to_read) {
 
   //Read in the file
   fp = fopen(to_read, "rt");
-  char line[800];
+  char line[20000];
 
-  while(fgets(line, 800, fp) != NULL) {
+  while(fgets(line, 20000, fp) != NULL) {
     //Tokenize String
     char *token;
 
-    token = strtok(line, " ");
+    token = strtok(line, " !@#$%^&*()_+=-\\\";\n\t,./'[]{}<>?:\"{}|");
 
     while(token != NULL) {
 
@@ -146,12 +187,9 @@ void readFile(char *to_read) {
       //Add Index Obj
       add(list, obj);	
 
-      printf("Printing List!!\n");
-      printls(list);
-
 
       //Move to next token
-      token = strtok(NULL, " ");
+      token = strtok(NULL, " !@#$%^&*()_+=-\\\";\n\t,./'[]{}<>?:\"{}|");
     }
 
   }
@@ -164,7 +202,61 @@ void readFile(char *to_read) {
 void writeFile(char *to_write) {
   printls(list);
   
+  //If the file is not found already on disk
+  if(isDir(to_write) == FILE_NOT_FOUND) {
+    //open the file
+    writeList(list, to_write);
+    //write the contents of the file from the data strucutre
+  } else {
+    //the file exists on disk
+
+    //Prompt confirmation of deletion
+
+    //if the file is a directory
+    //delete with recursive system call
+
+
+    //else just delete file and overwrite
+
+  }
 
 
 }
 
+void writeList(LinkedIndexObjListPtr list, char *to_write) {
+  FILE *fp;
+
+  fp = fopen(to_write, "w");
+
+  IndexObjPtr curr = list->front;
+
+  do {
+
+    fprintf(fp, "<list> ");
+    fprintf(fp, "%s", curr->word);
+    fprintf(fp, "\n");
+
+
+    FileIndexPtr f_curr = curr->file_list->front;
+
+    int i = 0;
+    while(f_curr != NULL) {
+      fprintf(fp, "%s", f_curr->file_name);
+      fprintf(fp, " ");
+      fprintf(fp, "%d", f_curr->freq);
+      fprintf(fp, " ");
+
+      if((i % 5) == 4) {
+	fprintf(fp, "\n");
+      }
+
+      i++;
+      f_curr = f_curr->next;
+    }
+
+
+  } while((curr = curr->next) != NULL);
+
+
+  fclose(fp);
+}
