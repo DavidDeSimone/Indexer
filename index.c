@@ -277,8 +277,8 @@ void writeList(LinkedIndexObjListPtr list, char *to_write) {
 
     fprintf(fp, "<list> ");
     fprintf(fp, "%s", curr->word);
-    fprintf(fp, "\n");
-
+    fprintf(fp, "\n\n");
+    
 
     FileIndexPtr f_curr = curr->file_list->front;
 
@@ -296,7 +296,7 @@ void writeList(LinkedIndexObjListPtr list, char *to_write) {
       i++;
       f_curr = f_curr->next;
     }
-    fprintf(fp, "\n</list>\n");
+    fprintf(fp, "\n\n</list>\n\n");
 
 
   } while((curr = curr->next) != NULL);

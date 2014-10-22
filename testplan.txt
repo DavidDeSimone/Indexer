@@ -1,0 +1,12 @@
+Test Plan for Assignment 3 for CS214
+
+Test File 1:
+test1.txt
+
+Expected Output:
+<list> hello
+test1.txt 1
+</list>
+<list> world
+test1.txt 1
+</list>
