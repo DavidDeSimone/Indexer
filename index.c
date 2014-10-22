@@ -166,13 +166,13 @@ void readFile(char *to_read) {
 
   //Read in the file
   fp = fopen(to_read, "rt");
-  char line[20000];
+  char line[100000];
 
-  while(fgets(line, 20000, fp) != NULL) {
+  while(fgets(line, 100000, fp) != NULL) {
     //Tokenize String
     char *token;
 
-    token = strtok(line, " !@#$%^&*()_+=-\\\";\n\t,./'[]{}<>?:\"{}|");
+    token = strtok(line, " !@#$%^&*()_+=-\\\";\n\t\v\b\r\a,./'[]{}<>?:\"{}|~`");
 
     while(token != NULL) {
 
@@ -190,7 +190,7 @@ void readFile(char *to_read) {
 
 
       //Move to next token
-      token = strtok(NULL, " !@#$%^&*()_+=-\\\";\n\t,./'[]{}<>?:\"{}|");
+      token = strtok(NULL, " !@#$%^&*()_+=-\\\";\n\t\v\b\r\a,./'[]{}<>?:\"{}|~`");
     }
 
   }
