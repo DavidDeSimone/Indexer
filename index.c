@@ -90,7 +90,9 @@ char* apdir(char *base, char *to_append) {
   char *ret = malloc(sizeof(char) * (strlen(base) + strlen(to_append)) + 2);
 
   strcpy(ret, base);
-  strcat(ret, "/");
+  if(base[strlen(base) - 1] != '/') {
+    strcat(ret, "/");
+  }
   strcat(ret, to_append);
 
   return ret;
@@ -192,7 +194,7 @@ void readFile(char *to_read, char *d_name) {
       toMake = toLower(toMake);
 
       //Create Index Obj
-      IndexObjPtr obj = create_index(toMake, d_name); 
+      IndexObjPtr obj = create_index(toMake, to_read); 
 
       //Add Index Obj
       add(list, obj);	

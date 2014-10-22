@@ -4,14 +4,23 @@ test_reads/test2.txt 2 test_reads/test1.txt 1 test_reads/test2.txt~ 1
 <list> and
 test_reads/test_deep/test_deep.txt 1 test_reads/test2.txt 1 
 </list>
+<list> bro
+test_reads/test_deep/test77.txt 1 
+</list>
+<list> choas
+test_reads/test_deep/double_deep/testSODEEP.txt 1 
+</list>
 <list> day
 test_reads/test1.txt 1 test_reads/test2.txt 1 test_reads/test2.txt~ 1 
 </list>
 <list> deep
-test_reads/test_deep/test_deep.txt 1 
+test_reads/test_deep/test77.txt 2 test_reads/test_deep/test_deep.txt 1 
 </list>
 <list> do
 test_reads/test3.txt 1 
+</list>
+<list> dunk
+test_reads/test_deep/double_deep/testSODEEP.txt 1 
 </list>
 <list> great
 test_reads/test2.txt 2 test_reads/test1.txt 1 test_reads/test2.txt~ 1 
@@ -33,6 +42,9 @@ test_reads/test_deep/test_deep.txt 1
 </list>
 <list> me
 test_reads/test3.txt 1 
+</list>
+<list> so
+test_reads/test_deep/test77.txt 2 
 </list>
 <list> this
 test_reads/test_deep/test_deep.txt 1 
